@@ -42,14 +42,25 @@ class App extends Component {
 
   }
 
-  render() {                  //method that component calls to render html element
+  render() {
+
+    const style = {
+      backgroundColor: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer'
+    };
+
     // using the arrow function to onClick allows to pass arguments
     //hoever, the bind method is more efficient and may effect performance of larger apps
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p>personsState is really working!</p>
-        <button onClick={() => this.switchNameHandler('Maximillian!!')}>Switch Name</button>
+        <button
+          style={style}
+          onClick={() => this.switchNameHandler('Maximillian!!')}>Switch Name</button>
         <Person
           name={this.state.persons[0].name}
           age={this.state.persons[0].age} />
