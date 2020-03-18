@@ -40,7 +40,13 @@ class App extends Component {
         { name: 'Stephanie', age: 26 }
       ]
     });
+  }
 
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice(); slice creates a copy of persons for manipulating
+    const persons = [...this.state.persons]  // same as slice method above but more modern
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
   }
 
   togglePersonsHandler = () => {
@@ -66,7 +72,13 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          <Person
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name}
+              age={person.age} />
+          })}
+          {/* <Person
             name={this.state.persons[0].name}
             age={this.state.persons[0].age} />
           <Person
@@ -76,7 +88,7 @@ class App extends Component {
             changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
           <Person
             name={this.state.persons[2].name}
-            age={this.state.persons[2].age} />
+            age={this.state.persons[2].age} /> */}
         </div>
 
       )
