@@ -5,16 +5,31 @@
 
 
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import './App.css';
+
 import Person from './Person/Person';
 
+const StyledButton = styled.button`
+
+  background-color: green;
+  color: white;
+  font: inherit;
+  border: 1px solid blue;
+  padding: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: lightgreen;
+    color: black;
+  }
+`;
 
 class App extends Component {
   state = {
     persons: [
-      { name: 'Max', age: 28 },
-      { name: 'Manu', age: 29 },
-      { name: 'Stephanie', age: 26 }
+      { id: 'gwgag', name: 'Max', age: 28 },
+      { id: 'bwrtk', name: 'Manu', age: 29 },
+      { id: 'ijhig', name: 'Stephanie', age: 26 }
     ],
     otherState: 'Some other value',
     showPersons: false
@@ -32,14 +47,33 @@ class App extends Component {
     });
   }
 
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: 'Max', age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: 'Stephanie', age: 26 }
-      ]
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    // Alternative methos for spread operation above
+    // const person = Object.assign({}, this.state.persons[personIndex])
+    // this new method does makes a copuy of the old state and does not mutate the old state
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons })
+
+    // old method below that mutates the state
+    //   this.setState({
+    //     persons: [
+    //       { name: 'Max', age: 28 },
+    //       { name: event.target.value, age: 29 },
+    //       { name: 'Stephanie', age: 26 }
+    //     ]
+    // });
   }
 
   deletePersonHandler = (personIndex) => {
@@ -60,11 +94,16 @@ class App extends Component {
   render() {
 
     const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
+      // backgroundColor: 'green',
+      // color: 'white',
+      // font: 'inherit',
+      // border: '1px solid blue',
+      // padding: '8px',
+      // cursor: 'pointer',
+      // ':hover': {
+      //   backgroundColor: 'lightgreen',
+      //   color: 'black'
+      // }
     };
 
     let persons = null;
@@ -76,33 +115,41 @@ class App extends Component {
             return <Person
               click={() => this.deletePersonHandler(index)}
               name={person.name}
-              age={person.age} />
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
-          {/* <Person
-            name={this.state.persons[0].name}
-            age={this.state.persons[0].age} />
-          <Person
-            name={this.state.persons[1].name}
-            age={this.state.persons[1].age}
-            click={this.switchNameHandler.bind(this, 'Max!')}
-            changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
-          <Person
-            name={this.state.persons[2].name}
-            age={this.state.persons[2].age} /> */}
+
         </div>
 
-      )
+      );
+
+      style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor: 'salmon',
+        color: 'black'
+      }
     }
+
+    const classes = [];
+    if (this.state.persons.length <= 2) {
+      classes.push('red');  // clsses = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold'); // clsses = ['red', 'bold']
+    }
+
+
 
     // using the arrow function to onClick allows to pass arguments
     //hoever, the bind method is more efficient and may effect performance of larger apps
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
-        <p>personsState is really working!</p>
-        <button
+        <p className={classes.join(' ')}>This is really working!</p>
+        <StyledButton
           style={style}
-          onClick={this.togglePersonsHandler}>Toggle Persons</button>
+          onClick={this.togglePersonsHandler}>Toggle Persons</StyledButton>
         {persons}
       </div>
     );
